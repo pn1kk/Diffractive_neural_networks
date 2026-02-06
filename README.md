@@ -1,1 +1,1 @@
-# Diffractive_neural_networks
+# Diffractive neural networks
