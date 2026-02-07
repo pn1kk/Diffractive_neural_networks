@@ -4,9 +4,9 @@
 
 В этом проекте исследуется зависимость обучения дифракционной оптической нейронной сети от некоторых физических параметров - расстояния между дифракционными слоями и перестановкой чувствительных зон детектора.
 
-* 'base_diffractive_nn' - пример простой архитектуры нейронной сети
-* 'zones_permutations' - сбор данных с перестановкой чувствительных зон и анализ результатов
-* 'freespace_distances' - сбор данных с разным расстоянием между дифракционными слоями и анализ результатов
+* `base_diffractive_nn.ipynb` - пример простой архитектуры нейронной сети
+* `zones_permutations` - сбор данных с перестановкой чувствительных зон и анализ результатов
+* `freespace_distances` - сбор данных с разным расстоянием между дифракционными слоями и анализ результатов
 
 **Полученные результаты:**
 1. От перестановки порядка чувствительных зон детектора точность статистически значимо не меняется
@@ -23,7 +23,7 @@
 
 This project investigates the dependence of training a diffractive optical neural network on certain physical parameters—the distance between diffractive layers and the permutation of the detector's sensitive zones.
 
-*   `base_diffractive_nn` – an example of a simple neural network architecture.
+*   `base_diffractive_nn.ipynb` – an example of a simple neural network architecture.
 *   `zones_permutations` – collecting data with permutations of sensitive zones and analyzing the results.
 *   `freespace_distances` – collecting data with different distances between diffractive layers and analyzing the results.
 
