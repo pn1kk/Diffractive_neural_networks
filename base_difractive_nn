@@ -1,0 +1,3015 @@
+```json
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "35c58e4e-9226-4d24-ae10-b84c5cc05ce5",
+   "metadata": {},
+   "source": [
+    "### Импорт библиотек"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "d15a31da-c6c3-427d-a070-afdc48a01305",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import os\n",
+    "import sys\n",
+    "import random\n",
+    "import json"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8f0f6378-5bc3-477d-bfd3-a08a9123b091",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import time"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f309cc84-f338-409f-b1a3-6ac36b945622",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c39328b9-9fa8-4937-9a53-905ea59276c5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import torch\n",
+    "from torch.utils.data import Dataset"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "59041be7-8d30-4981-a3da-e5d090a32339",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from torch import nn"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "72e92418-e8e7-4baa-882f-92b87f2c68ea",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from torch.nn import functional"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4ba00109-7b62-4f32-b685-17f437630230",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import torchvision\n",
+    "import torchvision.transforms as transforms\n",
+    "from torchvision.transforms import InterpolationMode"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8603ed7b-af59-4d79-b6a7-dcb599e28e1b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from tqdm import tqdm"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "b216854c-ca48-43e5-8672-070d0ac78392",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from datetime import datetime"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "02414ffa-fc8b-4cd7-a6fa-1f744a9a68a7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import matplotlib.pyplot as plt\n",
+    "import matplotlib.patches as patches\n",
+    "\n",
+    "plt.style.use('dark_background')\n",
+    "%matplotlib inline\n",
+    "# %config InlineBackend.figure_format = 'retina'"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b1a1d315-3dad-4b75-9595-de862888c419",
+   "metadata": {},
+   "source": [
+    "#### `Импорт из svetlanna`"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c68d7937-25cf-465f-af73-90f208686d68",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from svetlanna.units import ureg"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "902804f6-c104-4b4b-9b9f-f43ac9b4c1e1",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from svetlanna import SimulationParameters\n",
+    "from svetlanna.parameters import ConstrainedParameter"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "9b7826e8-9de7-4539-b16a-60827a25959f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from svetlanna import Wavefront\n",
+    "from svetlanna.transforms import ToWavefront"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "75005531",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import svetlanna.elements"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "d5a64cdd-5ed6-4fe1-ab77-d95120a45f72",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from svetlanna.elements import FreeSpace, Aperture, RectangularAperture, DiffractiveLayer\n",
+    "from svetlanna.setup import LinearOpticalSetup\n",
+    "from svetlanna.detector import Detector, DetectorProcessorClf"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "fcf3be29-791b-48a3-946b-b300ea0e26e9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from svetlanna.visualization import show_stepwise_forward"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "1d898096-f89a-4bb4-8bd2-b11d3b044c9d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from svetlanna.clerk import Clerk"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "73440a60-e88a-49d7-81a2-d6a3bed3bf63",
+   "metadata": {},
+   "source": [
+    "#### `src`"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "1cbc8319-2f82-4979-889a-4efcc8466039",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import sys\n",
+    "import os\n",
+    "\n",
+    "sys.path.append(os.path.abspath(\"\"))\n",
+    "\n",
+    "from src.wf_datasets import DatasetOfWavefronts"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "688215a7-800b-4108-aaa6-807f98b1b8ff",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# training and evaluation loops\n",
+    "from src.clf_loops import onn_train_clf, onn_validate_clf"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "94dfb2cb-94cf-4e83-a079-0a6ec828a66b",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cea815ac-b473-4d58-a0d5-1253d9740a40",
+   "metadata": {},
+   "source": [
+    "# Оптическая дифракционная нейронная сеть\n",
+    "\n",
+    "Данный ноутбук поможет реализовать простую архитектуру дифракционной оптической сети из статьи [[1]](https://www.science.org/doi/10.1126/science.aat8084)."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "e8a46e5e-6053-4e74-93eb-fb8e2c8f45a0",
+   "metadata": {},
+   "source": [
+    "# 1. Simulation parameters </span>\n",
+    "\n",
+    "\n",
+    "Необходимо задать параметры ОДНН: длину волны $\\lambda$, размер обучаемого пикселя (нейрона)\n",
+    "\n",
+    "**<span style=\"color:red\">Sources to use:</span>**\n",
+    "[[1]](https://www.science.org/doi/10.1126/science.aat8084) and its [Supplementary Material](https://www.science.org/doi/suppl/10.1126/science.aat8084/suppl_file/aat8084-lin-sm-rev-3.pdf), [[2]](https://ieeexplore.ieee.org/abstract/document/8732486) "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "68753229-ad8f-4f66-983d-cbe80002cd40",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO: задайте свои параметры сети"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "d815d886-8ffb-4a79-b488-6b207cd05b64",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "c_const = 299_792_458  # [m / s]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e389f46c-f2ca-4204-a30f-c270e5987163",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "working_frequency = 500000*ureg.GHz  # [GHz]\n",
+    "working_wavelength = c_const / working_frequency # [m]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "257fcf62-f897-4b81-af45-96326d47ab5e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# размер нейрона (в данном случае это квадраи)\n",
+    "neuron_size = 0.53 * working_wavelength # [m]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "19dc8771-a0e3-418b-9c0d-a725b21d12c4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# ALL_SIZE = (200, 200)  # for example (100, 100) neurons"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "6618b4ec-9fe2-45c7-8019-1f3b63c2e0f2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# размер рабочего пространства дифракционного слоя, где будут обновляться веса\n",
+    "ALL_SIZE = (200, 200)  # for example (100, 100) neurons"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cb111990-529e-4153-b585-ab0127bfc99f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "DETECTOR_SIZE = ALL_SIZE"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "1da8d905-67e4-4df9-8686-ce14f1b71b25",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# количество нейронов в симуляции\n",
+    "x_layer_nodes = ALL_SIZE[1]\n",
+    "y_layer_nodes = ALL_SIZE[0]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "fd7d7f13-d150-48be-8e4c-c97ea588ce44",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# расчет физической величины рабочего пространства в [m]\n",
+    "x_layer_size_m = x_layer_nodes * neuron_size  # [m]\n",
+    "y_layer_size_m = y_layer_nodes * neuron_size"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "37057e7b-8ba8-49d4-a9e3-c4b9ece0c7ba",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# параметры симуляции, которые будут использоваться далее\n",
+    "\n",
+    "SIM_PARAMS = SimulationParameters(\n",
+    "    axes={\n",
+    "        'W': torch.linspace(-x_layer_size_m / 2, x_layer_size_m / 2, x_layer_nodes),\n",
+    "        'H': torch.linspace(-y_layer_size_m / 2, y_layer_size_m / 2, y_layer_nodes),\n",
+    "        'wavelength': working_wavelength\n",
+    "    }\n",
+    ")  # это объект библиотеки `svetlanna`"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ddbc9f3f-308d-4c58-b79c-de72e1eeff7b",
+   "metadata": {},
+   "source": [
+    "# 2. Подготовка датасета"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "f18398b5-9ee7-470c-b2ef-bcd15b6f4768",
+   "metadata": {},
+   "source": [
+    "## 2.1. [MNIST датасет](https://www.kaggle.com/datasets/hojjatk/mnist-dataset)\n",
+    "\n",
+    "Загрузка и обработка датасета"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "0de278d4-1f7a-4651-8fce-74c41567c08f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# папка с данными\n",
+    "MNIST_DATA_FOLDER = './data'  # folder to store data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "687971fc-d632-41d7-bf2f-b0ab68e6d6b8",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "if not os.path.exists(MNIST_DATA_FOLDER):\n",
+    "    os.makedirs(MNIST_DATA_FOLDER)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0ab77fa7-dba0-4fbd-bb42-57560fbcac5c",
+   "metadata": {},
+   "source": [
+    "### 2.1.1. Загрузка"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c1d740b2-dfd1-4bf3-a86c-6fb13a831df0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Обучение (картинки)\n",
+    "mnist_train_ds = torchvision.datasets.MNIST(\n",
+    "    root=MNIST_DATA_FOLDER,\n",
+    "    train=True,  # for train dataset\n",
+    "    download=True,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "14fb6dc4-3849-467c-957d-26617d8c5214",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Тест (картинки)\n",
+    "mnist_test_ds = torchvision.datasets.MNIST(\n",
+    "    root=MNIST_DATA_FOLDER,\n",
+    "    train=False,  # for test dataset\n",
+    "    download=True,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "208ca22f-13b4-4066-a850-1bd35776637b",
+   "metadata": {},
+   "source": [
+    "## 2.2. Перевод изображений в волновой фронт\n",
+    "\n",
+    "From [[2]](https://ieeexplore.ieee.org/abstract/document/8732486):\n",
+    "\n",
+    "> Input objects were encoded in amplitude channel (MNIST) of the input plane and were illuminated with a uniform plane wave at a wavelength of $\\lambda$ to match the conditions introduced in [[1]](https://www.science.org/doi/10.1126/science.aat8084) for all-optical classification.\n",
+    "\n",
+    "So, we need to do an amplitude modulation of each image from the dataset!\n",
+    "\n",
+    "**<span style=\"color:red\">Comment:</span>**\n",
+    "We will see later what does \"amplitude modulation\" mean!"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8c37007c-0731-4b58-9059-e2f2bb792b52",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# select modulation type\n",
+    "MODULATION_TYPE = 'amp'  # using ONLY amplitude to encode each picture in a Wavefront!"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6297fd51-0bec-4b90-bf86-0346bc460f2e",
+   "metadata": {},
+   "source": [
+    "### 2.2.1. Transformations of images to Wavefronts"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "88113581-f819-4554-8d6a-db075f713a22",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "resize_y = int(DETECTOR_SIZE[0] / 2)\n",
+    "resize_x = int(DETECTOR_SIZE[1] / 2)  # shape for transforms.Resize\n",
+    "\n",
+    "# paddings along OY\n",
+    "pad_top = int((y_layer_nodes - resize_y) / 2)\n",
+    "pad_bottom = y_layer_nodes - pad_top - resize_y\n",
+    "# paddings along OX\n",
+    "pad_left = int((x_layer_nodes - resize_x) / 2)\n",
+    "pad_right = x_layer_nodes - pad_left - resize_x  # params for transforms.Pad"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "47e20e55-53f7-4f92-95eb-3ef75d5dddeb",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# compose all transforms!\n",
+    "image_transform_for_ds = transforms.Compose(\n",
+    "  [\n",
+    "      transforms.ToTensor(),\n",
+    "      transforms.Resize(\n",
+    "          size=(resize_y, resize_x),\n",
+    "          interpolation=InterpolationMode.NEAREST,\n",
+    "      ),\n",
+    "      transforms.Pad(\n",
+    "          padding=(\n",
+    "              pad_left,  # left padding\n",
+    "              pad_top,  # top padding\n",
+    "              pad_right,  # right padding\n",
+    "              pad_bottom  # bottom padding\n",
+    "          ),\n",
+    "          fill=0,\n",
+    "      ),  # padding to match sizes!\n",
+    "      ToWavefront(modulation_type=MODULATION_TYPE)  # <- select modulation type!!!\n",
+    "  ]  \n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4fb08e9c-26e0-4241-b2b0-88ea4529e96b",
+   "metadata": {},
+   "source": [
+    "### 2.2.2. Create Dataset objects for train and test datasets"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7309365a-2986-45e8-a259-97f378fcccef",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TRAIN dataset of WAVEFRONTS\n",
+    "mnist_wf_train_ds = DatasetOfWavefronts(\n",
+    "    init_ds=mnist_train_ds,  # dataset of images\n",
+    "    transformations=image_transform_for_ds,  # image transformation\n",
+    "    sim_params=SIM_PARAMS,  # simulation parameters\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "873dfbe6-81a1-47ab-9dfd-2f1513044fe7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TEST dataset of WAVEFRONTS\n",
+    "mnist_wf_test_ds = DatasetOfWavefronts(\n",
+    "    init_ds=mnist_test_ds,  # dataset of images\n",
+    "    transformations=image_transform_for_ds,  # image transformation\n",
+    "    sim_params=SIM_PARAMS,  # simulation parameters\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "038b5a54-175a-433b-98b6-8e37565d19b9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Train data: 60000\n",
+    "# Test data : 10000"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a76445f5-d5c6-4960-b7ea-d62a42614d1c",
+   "metadata": {},
+   "source": [
+    "### <span style=\"color:red\"> 2.2.3. Visualisation of dataset items (TODO) </span>"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a11e824c-1200-4219-90b5-9b155206b9f0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO: What are the items of `mnist_train_ds`?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "65cc788f-8eb2-48b9-9360-182595cb4c5f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO: Take a look on a visualization!"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "849494fd-0a2e-436b-a0ea-61838cdcc874",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# plot several EXAMPLES from TRAIN dataset\n",
+    "n_examples= 4  # number of examples to plot\n",
+    "# choosing indecies of images (from train) to plot\n",
+    "random.seed(78)\n",
+    "train_examples_ids = random.sample(range(len(mnist_train_ds)), n_examples)\n",
+    "\n",
+    "all_examples_wavefronts = []\n",
+    "\n",
+    "n_lines = 3\n",
+    "fig, axs = plt.subplots(n_lines, n_examples, figsize=(n_examples * 3, n_lines * 3.2))\n",
+    "for ind_ex, ind_train in enumerate(train_examples_ids):\n",
+    "    image, label = mnist_train_ds[ind_train]\n",
+    "    \n",
+    "    axs[0][ind_ex].set_title(f'id={ind_train} [{label}]')\n",
+    "    axs[0][ind_ex].imshow(image, cmap='gray')\n",
+    "\n",
+    "    wavefront, wf_label = mnist_wf_train_ds[ind_train]\n",
+    "    assert isinstance(wavefront, Wavefront)\n",
+    "\n",
+    "    all_examples_wavefronts.append(wavefront)\n",
+    "\n",
+    "    axs[1][ind_ex].set_title(f'$|WF|^2$')\n",
+    "    # here we can plot intensity for a wavefront\n",
+    "    axs[1][ind_ex].imshow(\n",
+    "        wavefront.intensity, cmap='gray',\n",
+    "        vmin=0, vmax=1\n",
+    "    )\n",
+    "    \n",
+    "    axs[2][ind_ex].set_title(f'phase of $WF$')\n",
+    "    axs[2][ind_ex].imshow(\n",
+    "        wavefront.phase, cmap='gray',\n",
+    "        vmin=0, vmax= 2 * torch.pi\n",
+    "    )\n",
+    "\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "73ae7308-f611-4948-a9fd-afa66856dc09",
+   "metadata": {},
+   "source": [
+    "# <span style=\"color:red\">3. Optical network (TODO)</span>\n",
+    "\n",
+    "Using sources realize an architecture with several equidistant diffractive layers!\n",
+    "\n",
+    "**<span style=\"color:red\">Sources to use:</span>**\n",
+    "[[1]](https://www.science.org/doi/10.1126/science.aat8084) and its [Supplementary Material](https://www.science.org/doi/suppl/10.1126/science.aat8084/suppl_file/aat8084-lin-sm-rev-3.pdf), [[2]](https://ieeexplore.ieee.org/abstract/document/8732486) "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cc004e50-5f52-4cd4-9d51-eeaf999209fe",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO: specify all values"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c72dbe6a-b8f5-42cd-9852-74f27fbe23d0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "NUM_OF_DIFF_LAYERS = 1  # number of diffractive layers\n",
+    "FREE_SPACE_DISTANCE = 40 * working_wavelength  # [m] - distance between difractive layers"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "628a0c01-5dc2-46cb-9ee3-b6d1c0acaa26",
+   "metadata": {},
+   "source": [
+    "## 3.1. Architecture"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "c017b60c-cb2c-4707-800e-5dfd2770389c",
+   "metadata": {},
+   "source": [
+    "### 3.1.1. Elements\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "572433d3-ddab-40ec-9fbf-974e0150f721",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "MAX_PHASE = 2 * np.pi"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "24e45194-9345-4287-af3e-27f8ebf6f3ad",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "FREESPACE_METHOD = 'AS'  # we use an angular spectrum method"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "01fd8c37-cf07-4272-b2d5-b6b830ccc927",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "INIT_PHASES = torch.ones(NUM_OF_DIFF_LAYERS) * np.pi"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "c2c8eff4-fd1a-41f2-b5df-056ff54edc2a",
+   "metadata": {},
+   "source": [
+    "#### Functions that return single elements for further architecture"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "22411824-c546-4721-99cb-1564445a4c3f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TAKE A LOOK! CODE HERE IS READY\n",
+    "def get_const_phase_layer(\n",
+    "    sim_params: SimulationParameters,\n",
+    "    value: float, \n",
+    "    max_phase=2 * torch.pi\n",
+    "):\n",
+    "    \"\"\"\n",
+    "    Returns DiffractiveLayer with a constant phase mask.\n",
+    "    \"\"\"\n",
+    "    x_nodes, y_nodes = sim_params.axes_size(axs=('W', 'H'))\n",
+    "\n",
+    "    const_mask = torch.ones(size=(y_nodes, x_nodes)) * value\n",
+    "    \n",
+    "    return DiffractiveLayer(\n",
+    "        simulation_parameters=sim_params,\n",
+    "        mask=ConstrainedParameter(\n",
+    "            const_mask,\n",
+    "            min_value=0,\n",
+    "            max_value=max_phase\n",
+    "        ),  # HERE WE ARE USING CONSTRAINED PARAMETER! Phases are learnable!\n",
+    "    )"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1b103a40-895b-4915-bdb8-01cab2838c1d",
+   "metadata": {},
+   "source": [
+    "### <span style=\"color:red\">3.1.2. List of Elements (TODO)</span>\n",
+    "\n",
+    "Function to construct a list of elements to reproduce an architecture from [the extended article](https://ieeexplore.ieee.org/abstract/document/8732486):"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "df37b226-fae8-4c79-a045-ba36c1c200a9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO: add elements (using functions from 3.1.1.) in necessary places!"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f4e3cf49-5e7f-4fe1-81c9-dd90021c9406",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def get_elements_list(\n",
+    "    num_layers,\n",
+    "    simulation_parameters,\n",
+    "    freespace_method,\n",
+    "    phase_values,\n",
+    "    apertures=False,\n",
+    "    aperture_size=(100, 100)\n",
+    "):\n",
+    "    \"\"\"\n",
+    "    Composes a list of elements for the setup.\n",
+    "    ...\n",
+    "\n",
+    "    Parameters\n",
+    "    ----------\n",
+    "    num_layers : int\n",
+    "        Number of layers in the system.\n",
+    "    simulation_parameters : SimulationParameters()\n",
+    "        A simulation parameters for a task.\n",
+    "    freespace_method : str\n",
+    "        Propagation method for free spaces in a setup.\n",
+    "    phase_values : torch.Tensor()\n",
+    "        Torch tensor of phase values to generate constant masks for diffractive layers.\n",
+    "        \n",
+    "    apertures : bool\n",
+    "        If True, than before each DiffractiveLayer (and detector) we add a square aperture.\n",
+    "        Comment: there are strickt square apertures!\n",
+    "    aperture_size : tuple\n",
+    "        A size of apertures.\n",
+    "        \n",
+    "    Returns\n",
+    "    -------\n",
+    "    elements_list : list(Element)\n",
+    "        List of Elements for an optical setup.\n",
+    "    \"\"\"\n",
+    "    elements_list = []  # list of elements\n",
+    "\n",
+    "    # -------------------------------------------------- TODO AFTER THE LINE!\n",
+    "    # -----------------------------------------------------------------------\n",
+    "    \n",
+    "    elements_list.append(FreeSpace(simulation_parameters, FREE_SPACE_DISTANCE, freespace_method))\n",
+    "        # your code...\n",
+    "      # first FreeSpace layer before first DiffractiveLayer\n",
+    "\n",
+    "    # several layers [Aperture + DiffractiveLayer + FreeSpace]\n",
+    "    for ind_layer in range(num_layers):\n",
+    "\n",
+    "        # add square Aperture if needed\n",
+    "        if apertures:\n",
+    "            elements_list.append(\n",
+    "                # your code...\n",
+    "            )\n",
+    "            \n",
+    "        # add DiffractiveLayer (learnable phase mask) and FreeSpace\n",
+    "        elements_list.append(get_const_phase_layer(simulation_parameters, phase_values[ind_layer], max_phase=MAX_PHASE)\n",
+    "        )\n",
+    "        \n",
+    "        elements_list.append(\n",
+    "            FreeSpace(simulation_parameters, FREE_SPACE_DISTANCE, freespace_method\n",
+    "        ))\n",
+    "\n",
+    "    # ----------------------------------------------------------- END OF TODO\n",
+    "    # -----------------------------------------------------------------------\n",
+    "\n",
+    "    \n",
+    "    # -----------------------------------------------------------------------\n",
+    "    # add add square Aperture before Detector\n",
+    "    if apertures:\n",
+    "        elements_list.append(\n",
+    "            # your code...  # <-------------------------- HERE IS TODO TOO!!!\n",
+    "        )\n",
+    "    \n",
+    "    # adding a Detector in the end of the system\n",
+    "    # Detector returns torch.tensor of intencities (not a Wavefront - read documentation)\n",
+    "    elements_list.append(\n",
+    "        Detector(\n",
+    "            simulation_parameters=simulation_parameters,\n",
+    "            func='intensity'\n",
+    "        )\n",
+    "    )\n",
+    "\n",
+    "    return elements_list"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "2b12dba0-f5fb-461f-b724-a9ea57895765",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "092f0c4c-6b3a-4d43-815e-eefc747922b2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Установка USE_APERTURES\n",
+    "USE_APERTURES = False  # или True, в зависимости от необходимости\n",
+    "\n",
+    "architecture_elements_list = get_elements_list(\n",
+    "    num_layers=NUM_OF_DIFF_LAYERS,\n",
+    "    simulation_parameters=SIM_PARAMS,\n",
+    "    freespace_method=FREESPACE_METHOD,\n",
+    "    phase_values=INIT_PHASES,\n",
+    "    apertures=USE_APERTURES,\n",
+    "    aperture_size=DETECTOR_SIZE\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f2006774-6cd7-4c26-ac94-ea6ca05214b5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Number of elements in the system (including Detector): 4"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "2a34cf91-1e75-4b23-a7d4-84ca094f0529",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "61958d45-f06e-4292-be5e-e0025dd1b2db",
+   "metadata": {},
+   "source": [
+    "### <span style=\"color:red\">3.1.3. Compose `LinearOpticalSetup` (TODO)</span>"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "727a9d29-8b31-47e9-b0b0-fdae9d44c813",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def get_setup(simulation_parameters, apertures=False):\n",
+    "    \"\"\"\n",
+    "    Returns an optical setup. Recreates all elements.\n",
+    "    \"\"\"\n",
+    "    elements_list = get_elements_list(\n",
+    "        num_layers=NUM_OF_DIFF_LAYERS,\n",
+    "        simulation_parameters=SIM_PARAMS,\n",
+    "        freespace_method=FREESPACE_METHOD,\n",
+    "        phase_values=INIT_PHASES,\n",
+    "        apertures=apertures,\n",
+    "        aperture_size=DETECTOR_SIZE\n",
+    "    )  # recreate a list of elements\n",
+    "\n",
+    "    return LinearOpticalSetup(elements=elements_list)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 63,
+   "id": "762206a1-1bc1-4725-b7dc-53dcb252d66e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# creaye an optical setup\n",
+    "optical_setup = get_setup(SIM_PARAMS, apertures=USE_APERTURES)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "223bd522-f656-45a7-8f0e-ef74ed6aa9a1",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO: Check the architecture!"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 64,
+   "id": "90ec1286-321e-4444-9f3c-e9d53c5e381a",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Sequential(\n",
+       "  (0): FreeSpace()\n",
+       "  (1): DiffractiveLayer(\n",
+       "    (mask_svtlnn_inner_parameter): InnerParameterStorageModule()\n",
+       "  )\n",
+       "  (2): FreeSpace()\n",
+       "  (3): Detector()\n",
+       ")"
+      ]
+     },
+     "execution_count": 64,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "optical_setup.net"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "8c4fc9e8-ce6b-4f8c-b120-6b9ff70630b2",
+   "metadata": {},
+   "source": [
+    "**<span style=\"color:red\">Comment:</span>** Setup ends with `Detector` that returns an output tensor of intensities for each input `Wavefront`."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "74616a5a-c1e1-4ab1-b0fd-85f83338a5ea",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0176fa87-f51c-4ef1-bf22-64855a370695",
+   "metadata": {},
+   "source": [
+    "### <span style=\"color:red\">3.1.4. Example of a random wavefrnt propagation (TODO)</span>"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "10434cb3-2ca2-43ec-9463-c522ecc618a9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO: check how a random wavefront propagates through an untrained system"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 66,
+   "id": "9480488a-4bb6-4d81-8f68-fa09c4b73c26",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "random_ind = np.random.randint(1, len(mnist_wf_train_ds))\n",
+    "\n",
+    "example_wf = mnist_wf_train_ds[random_ind][0]\n",
+    "example_label = mnist_wf_train_ds[random_ind][1]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 68,
+   "id": "fee1d93e-a61e-4744-be92-f715dee19db0",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Label of selected wavefront: 3\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "torch.Size([200, 200])"
+      ]
+     },
+     "execution_count": 68,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "print(f'Label of selected wavefront: {example_label}')\n",
+    "example_wf.size()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8538e8b8-911d-475a-bc33-7ed4a161c9ef",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO: take a look on the visualization below!"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "defeaf77-da7c-44a4-a284-16f581b699ae",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# old version...\n",
+    "# setup_scheme, wavefronts = optical_setup.stepwise_forward(example_wf)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 69,
+   "id": "a7810b55-235b-49ea-9f48-337c87efeca1",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "c:\\Users\\nikku\\newfolder\\.venv\\Lib\\site-packages\\svetlanna\\elements\\diffractive_layer.py:99: RuntimeWarning: invalid value encountered in divide\n",
+      "  ImageRepr((255 * (mask - mask_min) / (mask_max - mask_min)).astype('uint8')),\n",
+      "c:\\Users\\nikku\\newfolder\\.venv\\Lib\\site-packages\\svetlanna\\elements\\diffractive_layer.py:99: RuntimeWarning: invalid value encountered in cast\n",
+      "  ImageRepr((255 * (mask - mask_min) / (mask_max - mask_min)).astype('uint8')),\n"
+     ]
+    },
+    {
+     "data": {
+      "application/vnd.jupyter.widget-view+json": {
+       "model_id": "ecc222c1e36440b09d6ae2b19f4a9431",
+       "version_major": 2,
+       "version_minor": 1
+      },
+      "text/plain": [
+       "StepwiseForwardWidget(elements=[{'index': 0, 'name': 'LinearOpticalSetup', 'output_image': 'iVBORw0KGgoAAAANSU…"
+      ]
+     },
+     "execution_count": 69,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "show_stepwise_forward(\n",
+    "    optical_setup,\n",
+    "    input= example_wf,  # TODO: add a wavefront to propagate!\n",
+    "    simulation_parameters=SIM_PARAMS,\n",
+    "    types_to_plot=(\"I\", \"phase\")  # TODO: check different types! \n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "435cdfc0-3293-42a6-841f-ac59cd366e88",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "450c6c03-bd60-4a40-a557-ce3fb0ccd0c6",
+   "metadata": {},
+   "source": [
+    "## <span style=\"color:red\">3.2. Detector processor (!TODO!)</span>\n",
+    "\n",
+    "Here we need to specify size of each detector segment responcible for each digit classification (see sources).\n",
+    "\n",
+    "Also we need to write a function that returns a detector mask with a desired placement and ordering of segments in a Detector plane!\n",
+    "\n",
+    "**<span style=\"color:red\">Sources to use:</span>**\n",
+    "[[1]](https://www.science.org/doi/10.1126/science.aat8084) and its [Supplementary Material](https://www.science.org/doi/suppl/10.1126/science.aat8084/suppl_file/aat8084-lin-sm-rev-3.pdf), [[2]](https://ieeexplore.ieee.org/abstract/document/8732486) "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 71,
+   "id": "91d1e9b5-8703-4201-8743-b54eac91da99",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "NUMBER_OF_CLASSES = 10  # TODO: how many classes do we have?\n",
+    "NEURON_SIZE = neuron_size"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "8d1dabde-317c-45c3-a9ee-4bffd403b5cb",
+   "metadata": {},
+   "source": [
+    "### <span style=\"color:red\">3.2.1. Detector mask (TODO)</span>"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 72,
+   "id": "e8c1e018-fb72-480e-b7a4-5eaf29145ed3",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "detector_segment_size_m = 6.4 * working_wavelength  # in [m]\n",
+    "DETECTOR_SEGMENT_SIZE = int(detector_segment_size_m / neuron_size) # in neurons (int)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 73,
+   "id": "7c8aa135-9ddb-41c2-89d3-bf25d37aa04b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def get_detector_mask(\n",
+    "    segment_size_in_neurons,  # int value\n",
+    "    order_of_digits=list(range(NUMBER_OF_CLASSES))\n",
+    "):\n",
+    "    for i in range(NUMBER_OF_CLASSES):  # check if all places for digits specified\n",
+    "        if not i in order_of_digits:\n",
+    "            print('Wrong ordering list!')\n",
+    "\n",
+    "    if not len(order_of_digits) == NUMBER_OF_CLASSES:\n",
+    "        print('Wrong ordering list!')\n",
+    "\n",
+    "    x_grid, y_grid = SIM_PARAMS.meshgrid(x_axis='W', y_axis='H')\n",
+    "\n",
+    "    mask_det = torch.ones(size = ALL_SIZE)*(-1)\n",
+    "    \n",
+    "    for i in range(3):\n",
+    "        select = (\n",
+    "            (x_grid < (-1.5 + 2 * i) * detector_segment_size_m) & (x_grid > (-2.5 + 2 * i) * detector_segment_size_m) & \n",
+    "            (y_grid < (-1.5) * detector_segment_size_m) & (y_grid > (-2.5) * detector_segment_size_m)\n",
+    "        )\n",
+    "    \n",
+    "        mask_det[select] = order_of_digits[i]\n",
+    "    \n",
+    "    for i in range(4):\n",
+    "        select = (\n",
+    "            (x_grid < (-2.5 + 2 * i) * detector_segment_size_m) & (x_grid > (-3.5 + 2 * i) * detector_segment_size_m) & \n",
+    "            (y_grid < 0.5 * detector_segment_size_m) & (y_grid > -0.5 * detector_segment_size_m)\n",
+    "        )\n",
+    "    \n",
+    "        mask_det[select] = order_of_digits[i+3]\n",
+    "    \n",
+    "    for i in range(3):\n",
+    "        select = (\n",
+    "            (x_grid < (-1.5 + 2 * i) * detector_segment_size_m) & (x_grid > (-2.5 + 2 * i) * detector_segment_size_m) & \n",
+    "            (y_grid < (-1.5 + 4) * detector_segment_size_m) & (y_grid > (-2.5 + 4) * detector_segment_size_m)\n",
+    "        )\n",
+    "    \n",
+    "        mask_det[select] = order_of_digits[i + 7]\n",
+    "\n",
+    "    return mask_det"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "31171243-b32c-4261-b850-4c0a6cd5deb8",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 74,
+   "id": "c92ff6e7-d778-4aeb-a6b3-a1d828977f85",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ZONES_ORDER = [0, 1, 2 , 3, 4 ,5 , 6, 7, 8, 9]  # TODO% specify the order"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 75,
+   "id": "eeb7d86b-ab1d-4575-a757-a8ee00f350dd",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "DETECTOR_MASK = get_detector_mask(\n",
+    "    DETECTOR_SEGMENT_SIZE,\n",
+    "    order_of_digits=ZONES_ORDER\n",
+    ")\n",
+    "\n",
+    "plt.imshow(DETECTOR_MASK, cmap = 'rainbow')\n",
+    "plt.colorbar()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "5076b296-30ed-447f-bf87-c07355c447d2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO*: add your function as a file in src/"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9b79963c-18c5-4620-82cb-2485a986a1fd",
+   "metadata": {},
+   "source": [
+    "### <span style=\"color:red\">3.2.2. Detector processor (TODO)</span>"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 76,
+   "id": "cb2adcfd-788b-4939-8471-b87b95c31b68",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# create a DetectorProcessorOzcanClf object\n",
+    "DETECTOR_PROCESSOR = DetectorProcessorClf(\n",
+    "    simulation_parameters=SIM_PARAMS,\n",
+    "    num_classes=NUMBER_OF_CLASSES,\n",
+    "    segmented_detector=DETECTOR_MASK,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7b78df3d-748c-4de0-8140-57aac09888dc",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO: check the mask"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 77,
+   "id": "de33d6a2-253b-4b4a-82a7-44254e479cd2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fig, ax0 = plt.subplots(1, 1, figsize=(3, 3))\n",
+    "\n",
+    "ax0.set_title(f'Detector segments')\n",
+    "ax0.imshow(DETECTOR_PROCESSOR.segmented_detector, cmap='grey')\n",
+    "\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4ec8806d-73da-4907-ae26-c3622d17553c",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "e2651f63-1063-4b9b-bfb1-b3d0d543babc",
+   "metadata": {},
+   "source": [
+    "#### To visualize detector zones (for further use)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 78,
+   "id": "7b6bc396-cfbb-40a0-9bfe-e12987f9e808",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ZONES_HIGHLIGHT_COLOR = 'w'\n",
+    "ZONES_LW = 0.5\n",
+    "selected_detector_mask = DETECTOR_PROCESSOR.segmented_detector.clone().detach()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 79,
+   "id": "bd154079-4d24-4787-9304-df43fd2b7d3d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def get_zones_patches(detector_mask):\n",
+    "    \"\"\"\n",
+    "    Returns a list of patches to draw zones in final visualisation\n",
+    "    \"\"\"\n",
+    "    zones_patches = []\n",
+    "\n",
+    "    delta = 0.5\n",
+    "    \n",
+    "    for ind_class in range(NUMBER_OF_CLASSES):\n",
+    "        idx_y, idx_x = (detector_mask == ind_class).nonzero(as_tuple=True)\n",
+    "        \n",
+    "        zone_rect = patches.Rectangle(\n",
+    "            (idx_x[0] - delta, idx_y[0] - delta), \n",
+    "            idx_x[-1] - idx_x[0] + 2 * delta, idx_y[-1] - idx_y[0] + 2 * delta, \n",
+    "            linewidth=ZONES_LW, \n",
+    "            edgecolor=ZONES_HIGHLIGHT_COLOR,\n",
+    "            facecolor='none'\n",
+    "        )\n",
+    "        \n",
+    "        zones_patches.append(zone_rect)\n",
+    "\n",
+    "    return zones_patches"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "28c36a79-6ebf-49c6-97f8-dbbe89885b83",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b9bf3718-ed29-4fcc-9474-c5d7909b9970",
+   "metadata": {},
+   "source": [
+    "# <span style=\"color:red\">4. Training of the network (TODO)</span>\n",
+    "\n",
+    "Variables at the moment\n",
+    "- `optical_setup` : `LinearOpticalSetup` – a linear optical network composed of Elements\n",
+    "- `detector_processor` : `DetectorProcessorClf` – this layer process an image from the detector and calculates probabilities of belonging to classes."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 80,
+   "id": "7782668c-2abd-4321-949a-8de50dd8e7f2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "DEVICE = 'cpu'\n",
+    "# 'cuda' will be tested in another example"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 81,
+   "id": "9c37298b-6f84-4586-81d2-80268e84c566",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'cpu'"
+      ]
+     },
+     "execution_count": 81,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')\n",
+    "DEVICE"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "78553183-6043-4f46-8910-e33f0dc3a1a3",
+   "metadata": {},
+   "source": [
+    "## 4.1. Prepare some stuff for training"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1ec8cc8c-1876-4790-a012-48f2474e7e74",
+   "metadata": {},
+   "source": [
+    "### <span style=\"color:red\">4.1.1. `DataLoaders` (TODO)</span>\n",
+    "\n",
+    "**<span style=\"color:red\">Sources to use:</span>**\n",
+    "[[1]](https://www.science.org/doi/10.1126/science.aat8084) and its [Supplementary Material](https://www.science.org/doi/suppl/10.1126/science.aat8084/suppl_file/aat8084-lin-sm-rev-3.pdf), [[2]](https://ieeexplore.ieee.org/abstract/document/8732486) "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4211af00-962e-4f64-837d-8b0f40ff2639",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO: Specify batch sizes for training"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 82,
+   "id": "d3dd9a8b-3e30-44df-8335-099fb140cd62",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "train_bs = 20  # a batch size for training set\n",
+    "val_bs = 8"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "76c91326-5104-4c52-8ca8-68961010a7dc",
+   "metadata": {},
+   "source": [
+    "#### Train/Validation split"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 83,
+   "id": "33ca736b-a938-416e-9362-40c22136c566",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO: specify a random seed\n",
+    "train_val_split_seed = np.random.randint(10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 84,
+   "id": "1eaacee1-7361-4d4c-83d6-815ccebaebef",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# mnist_wf_train_ds\n",
+    "train_wf_ds, val_wf_ds = torch.utils.data.random_split(\n",
+    "    dataset=mnist_wf_train_ds,\n",
+    "    lengths=[55000, 5000],  # sizes from the article\n",
+    "    generator=torch.Generator().manual_seed(train_val_split_seed)  # for reproducibility\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 85,
+   "id": "43c3fbef-5a00-4784-a5c8-85c47231890e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "train_wf_loader = torch.utils.data.DataLoader(\n",
+    "    train_wf_ds,\n",
+    "    batch_size=train_bs,\n",
+    "    shuffle=True,\n",
+    "    # num_workers=2,\n",
+    "    drop_last=False,\n",
+    ")\n",
+    "\n",
+    "val_wf_loader = torch.utils.data.DataLoader(\n",
+    "    val_wf_ds,\n",
+    "    batch_size=val_bs,\n",
+    "    shuffle=False,\n",
+    "    # num_workers=2,\n",
+    "    drop_last=False,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "0ff84f0d-925b-407c-a506-4d02c35fd4ea",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ffb8ff99-0e12-4502-9219-40718ef15852",
+   "metadata": {},
+   "source": [
+    "### 4.1.2. Optimizer and loss function\n",
+    "\n",
+    "Info from a supplementary material of [[1]](https://www.science.org/doi/suppl/10.1126/science.aat8084/suppl_file/aat8084-lin-sm-rev-3.pdf) for MNIST classification:\n",
+    "\n",
+    "> We used the stochastic gradient descent algorithm, Adam, to back-propagate the errors and update the\n",
+    "layers of the network to minimize the loss function.\n",
+    "\n",
+    "**<span style=\"color:red\">Additional info</span>** from [[2]](https://ieeexplore.ieee.org/abstract/document/8732486):\n",
+    "> a back-propagation method by applying the adaptive moment estimation optimizer (Adam) with a learning rate of $10^{−3}$"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 86,
+   "id": "b61be8c4-f379-4987-a314-2f7e17eef84f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "LR = 1e-3"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 87,
+   "id": "8fbf825c-e9ca-4f94-b1d6-da4921748cf0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def get_adam_optimizer(net):\n",
+    "    return torch.optim.Adam(\n",
+    "        params=net.parameters(),  # NETWORK PARAMETERS!\n",
+    "        lr=LR\n",
+    "    )"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 88,
+   "id": "390a425d-cff3-44ba-81f6-2fe467c52a33",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "loss_func_clf = nn.CrossEntropyLoss()\n",
+    "loss_func_name = 'CE loss'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "09af0a6d-09b9-4235-b10d-86cd5af1b178",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a7381166-44cd-4136-a67b-e703fd1d8509",
+   "metadata": {},
+   "source": [
+    "### 4.1.3. Training and evaluation loops"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 89,
+   "id": "6712d830-8a01-4f32-b2be-17631fad71f3",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# we are just importing them from src folder\n",
+    "from src.clf_loops import onn_train_clf, onn_validate_clf"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ea484d71-20a9-4590-be00-32eb052cedbc",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "5916b72f-dacb-47b0-a41c-853b430f4f89",
+   "metadata": {},
+   "source": [
+    "## <span style=\"color:red\">4.2. Training of the optical network (TODO)</span>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4d19488d-031b-43ed-909c-562fbeb76c59",
+   "metadata": {},
+   "source": [
+    "### 4.2.1. Before training"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "224a3df0-4bc1-41e0-aaa0-fc75c04f3f8c",
+   "metadata": {},
+   "source": [
+    "> a diffractive layer ... neurons ... were initialized with $\\pi$ for phase values and $1$ for amplitude values ..."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "76c5c93e-de70-415c-a940-4bf1cb03d5e6",
+   "metadata": {},
+   "source": [
+    "#### Metrics for Test dataset"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 90,
+   "id": "0523bf4f-a304-4240-aae7-f12ff846565e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "test_wf_loader = torch.utils.data.DataLoader(\n",
+    "    mnist_wf_test_ds,\n",
+    "    batch_size=10,\n",
+    "    shuffle=False,\n",
+    "    # num_workers=2,\n",
+    "    drop_last=False,\n",
+    ")  # data loader for a test MNIST data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 92,
+   "id": "28abb09f-0423-47da-8b7f-c5e4a1a3aa3a",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "validation: 100%|██████████| 1000/1000 [00:53<00:00, 18.81it/s]"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Results before training on TEST set:\n",
+      "\tCE loss : 2.294794\n",
+      "\tAccuracy : 13.6 %\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "test_losses_0, _, test_accuracy_0 = onn_validate_clf(\n",
+    "    optical_setup.net,  # optical network composed in 3.\n",
+    "    test_wf_loader,  # dataloader of training set\n",
+    "    DETECTOR_PROCESSOR,  # detector processor\n",
+    "    loss_func_clf,\n",
+    "    device=DEVICE,\n",
+    "    show_process=True,\n",
+    ")  # evaluate the model\n",
+    "\n",
+    "print(\n",
+    "    'Results before training on TEST set:\\n' + \n",
+    "    f'\\t{loss_func_name} : {np.mean(test_losses_0):.6f}\\n' +\n",
+    "    f'\\tAccuracy : {(test_accuracy_0 * 100):>0.1f} %'\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "6142a33b-e47f-4283-bc30-13165b96fedf",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "de9a5938-095b-4e9a-8994-1e82ccdc2382",
+   "metadata": {},
+   "source": [
+    "### <span style=\"color:red\"> 4.2.2. Some values for training (TODO)</span>"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7dcf84ea-7736-4e35-a7fc-ccfd9f01f927",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO: specify values"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 94,
+   "id": "6af66260-159f-4656-a35e-df434135e2a4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "NUM_EPOCHS = 3"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 95,
+   "id": "4b359fab-022f-452b-9355-38146bdd307f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "TORCH_SEED = np.random.randint(100)  # for reproducability (int)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c873837a-4e9a-47b0-9fd2-0c094f72d438",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "7b091229-3c2a-4233-8459-f3ffd528e9bc",
+   "metadata": {},
+   "source": [
+    "### <span style=\"color:red\"> 4.2.3. Save all parameters in file (TODO)</span>"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 96,
+   "id": "b84bddc9-a09c-4a81-a27c-a7a5818aee38",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "today_date = datetime.today().strftime('%d-%m-%Y_%H-%M')  # date for a results folder name"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 97,
+   "id": "adb36cb0-7e9a-4c46-8611-0a1bed807d34",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'results/exp_09-01-2026_21-00'"
+      ]
+     },
+     "execution_count": 97,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "RESULTS_FOLDER = f'results/exp_{today_date}'\n",
+    "RESULTS_FOLDER"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "7f3c7c4b-9939-4f48-9ef8-8bb81c1a5a57",
+   "metadata": {},
+   "source": [
+    "#### Conditions"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4af6f2ad-7106-4d6d-b2e4-3cc5eb733920",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO: maybe add some other parameters"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 98,
+   "id": "26960bc3-bf42-4cc2-8185-cf4a3b4c5d88",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "VARIABLES = {    \n",
+    "    'wavelength': working_wavelength,  # working wavelength, in [m]\n",
+    "    'neuron_size': neuron_size,  # size of a pixel for DiffractiveLayers, in [m]\n",
+    "    'mesh_size': ALL_SIZE,  # full size of a layer = numerical mesh\n",
+    "    'use_apertures': USE_APERTURES,  # if we need to add apertures before each DiffractieLayer\n",
+    "    'aperture_size': DETECTOR_SIZE,  # size of each aperture = a detector square for classes zones\n",
+    "    \n",
+    "    # DETECTOR ZONES\n",
+    "    'detector_segment_size': detector_segment_size_m,  # size of each square class zone on a detector, in [m]\n",
+    "    'segments_order': ZONES_ORDER,\n",
+    "\n",
+    "    # RANDOM SEEDS\n",
+    "    'train_val_seed': train_val_split_seed,\n",
+    "    'torch_seed': TORCH_SEED,\n",
+    "    \n",
+    "    # NETWORK - SECTION 3 of the notebook\n",
+    "    'free_space_distance': FREE_SPACE_DISTANCE,  # constant free space distance for a network, in [m]\n",
+    "    \n",
+    "    # OPTICAL NETWORK LEARNING - SECTION 4 of the notebook\n",
+    "    'train_batch_size': train_bs,  # batch sizes for training\n",
+    "    'val_batch_size': val_bs,\n",
+    "    'adam_lr': LR,  # learning rate for Adam optimizer\n",
+    "    'number_of_epochs': NUM_EPOCHS,  # number of epochs to train\n",
+    "}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 99,
+   "id": "6c8b86ab-1e41-4e65-b1af-85b2c481e75c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "if not os.path.exists(RESULTS_FOLDER):\n",
+    "    os.makedirs(RESULTS_FOLDER)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 102,
+   "id": "879df5ac-6ddf-42b1-a06f-3edec06055db",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# save experiment conditions (VARIABLES dictionary)\n",
+    "with open(f'{RESULTS_FOLDER}/conditions.json', 'w', encoding ='utf8') as json_file:\n",
+    "    json.dump(VARIABLES, json_file, ensure_ascii = True)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b8e0c116-df7c-4267-a696-f1db17286ed7",
+   "metadata": {},
+   "source": [
+    "#### Detector mask"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 103,
+   "id": "82f28b00-c1ba-4d2a-bc7b-ce56c5be77da",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "torch.save(DETECTOR_MASK, f'{RESULTS_FOLDER}/detector_mask.pt')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "fe4f8481-fe79-47af-8777-10b54a5c38a7",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9b263dc4-4c9d-41a6-8f89-bfdb860a4273",
+   "metadata": {},
+   "source": [
+    "### 4.2.4. Training"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 104,
+   "id": "2ce8ef8d-dd2a-4bb6-8b6d-ca3792dbc6c4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print_each = 1  # print each n'th epoch info"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 105,
+   "id": "6adb8840-df52-425c-bacf-0cfea6e8c1da",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "scheduler = None  # sheduler for a lr tuning during training "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 106,
+   "id": "c58a2fc5-fed3-4730-ae75-bb814ab0daf8",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "c:\\Users\\nikku\\newfolder\\.venv\\Lib\\site-packages\\svetlanna\\elements\\free_space.py:150: UserWarning: Aliasing problems may occur in the AS method (x-axis). Consider reducing the distance.\n",
+      "  warn(\n",
+      "c:\\Users\\nikku\\newfolder\\.venv\\Lib\\site-packages\\svetlanna\\elements\\free_space.py:155: UserWarning: Aliasing problems may occur in the AS method (y-axis). Consider reducing the distance.\n",
+      "  warn(\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Recreate a system to restart training!\n",
+    "optical_setup_to_train = get_setup(SIM_PARAMS, apertures=False)\n",
+    "# Link optimizer to a recreated net!\n",
+    "optimizer_clf = get_adam_optimizer(optical_setup_to_train.net)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "158d9843-5ca6-42bc-84b2-eb67f25fcc6b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO: RUN TRAINING! Look on losses!"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 108,
+   "id": "a0d3cd09-a569-40ef-ab30-a1b4a1ce6531",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Epoch #1: "
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "train: 100%|██████████| 2750/2750 [04:46<00:00,  9.59it/s]\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Training results\n",
+      "\tCE loss : 2.191596\n",
+      "\tAccuracy : 35.7 %\n",
+      "\t------------   286.91 s\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "validation: 100%|██████████| 625/625 [00:22<00:00, 28.30it/s]\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Validation results\n",
+      "\tCE loss : 2.125664\n",
+      "\tAccuracy : 48.1 %\n",
+      "\t------------   22.09 s\n",
+      "Epoch #2: "
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "train: 100%|██████████| 2750/2750 [05:47<00:00,  7.91it/s]\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Training results\n",
+      "\tCE loss : 2.093997\n",
+      "\tAccuracy : 52.6 %\n",
+      "\t------------   347.80 s\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "validation: 100%|██████████| 625/625 [00:32<00:00, 19.16it/s]\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Validation results\n",
+      "\tCE loss : 2.078054\n",
+      "\tAccuracy : 54.0 %\n",
+      "\t------------   32.62 s\n",
+      "Epoch #3: "
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "train: 100%|██████████| 2750/2750 [05:57<00:00,  7.70it/s]\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Training results\n",
+      "\tCE loss : 2.057361\n",
+      "\tAccuracy : 55.8 %\n",
+      "\t------------   357.06 s\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "validation: 100%|██████████| 625/625 [00:34<00:00, 18.15it/s]"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Validation results\n",
+      "\tCE loss : 2.052184\n",
+      "\tAccuracy : 55.8 %\n",
+      "\t------------   34.45 s\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "train_epochs_losses = []\n",
+    "val_epochs_losses = []  # to store losses of each epoch\n",
+    "\n",
+    "train_epochs_acc = []\n",
+    "val_epochs_acc = []  # to store accuracies\n",
+    "\n",
+    "torch.manual_seed(TORCH_SEED)\n",
+    "\n",
+    "for epoch in range(NUM_EPOCHS):\n",
+    "    if (epoch == 0) or ((epoch + 1) % print_each == 0) or (epoch == n_epochs - 1):\n",
+    "        print(f'Epoch #{epoch + 1}: ', end='')\n",
+    "        show_progress = True\n",
+    "    else:\n",
+    "        show_progress = False\n",
+    "\n",
+    "    # TRAIN\n",
+    "    start_train_time = time.time()  # start time of the epoch (train)\n",
+    "    train_losses, _, train_accuracy = onn_train_clf(\n",
+    "        optical_setup_to_train.net,  # optical network composed in 3.\n",
+    "        train_wf_loader,  # dataloader of training set\n",
+    "        DETECTOR_PROCESSOR,  # detector processor\n",
+    "        loss_func_clf,\n",
+    "        optimizer_clf,\n",
+    "        device=DEVICE,\n",
+    "        show_process=show_progress,\n",
+    "    )  # train the model\n",
+    "    mean_train_loss = np.mean(train_losses)\n",
+    "    \n",
+    "    if (epoch == 0) or ((epoch + 1) % print_each == 0) or (epoch == n_epochs - 1):  # train info\n",
+    "        print('Training results')\n",
+    "        print(f'\\t{loss_func_name} : {mean_train_loss:.6f}')\n",
+    "        print(f'\\tAccuracy : {(train_accuracy*100):>0.1f} %')\n",
+    "        print(f'\\t------------   {time.time() - start_train_time:.2f} s')\n",
+    "\n",
+    "    # VALIDATION\n",
+    "    start_val_time = time.time()  # start time of the epoch (validation)\n",
+    "    val_losses, _, val_accuracy = onn_validate_clf(\n",
+    "        optical_setup_to_train.net,  # optical network composed in 3.\n",
+    "        val_wf_loader,  # dataloader of validation set\n",
+    "        DETECTOR_PROCESSOR,  # detector processor\n",
+    "        loss_func_clf,\n",
+    "        device=DEVICE,\n",
+    "        show_process=show_progress,\n",
+    "    )  # evaluate the model\n",
+    "    mean_val_loss = np.mean(val_losses)\n",
+    "    \n",
+    "    if (epoch == 0) or ((epoch + 1) % print_each == 0) or (epoch == n_epochs - 1):  # validation info\n",
+    "        print('Validation results')\n",
+    "        print(f'\\t{loss_func_name} : {mean_val_loss:.6f}')\n",
+    "        print(f'\\tAccuracy : {(val_accuracy*100):>0.1f} %')\n",
+    "        print(f'\\t------------   {time.time() - start_val_time:.2f} s')\n",
+    "            \n",
+    "    if scheduler:\n",
+    "        scheduler.step(mean_val_loss) \n",
+    "    \n",
+    "    # save losses\n",
+    "    train_epochs_losses.append(mean_train_loss)\n",
+    "    val_epochs_losses.append(mean_val_loss)\n",
+    "    # seve accuracies\n",
+    "    train_epochs_acc.append(train_accuracy)\n",
+    "    val_epochs_acc.append(val_accuracy)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "b98ba775-fce1-4723-885b-3620fe1aa85b",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "c27f31b5-ccc7-4600-baa0-04c7fe079f50",
+   "metadata": {},
+   "source": [
+    "### 4.2.5. Saving results"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0c2e306a-d3ed-4795-abe7-5e5e7a2c0880",
+   "metadata": {},
+   "source": [
+    "#### Plot and save losses"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 110,
+   "id": "51fb9f4e-01de-437c-8f42-fea50e0f3b66",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# learning curve\n",
+    "fig, axs = plt.subplots(1, 2, figsize=(10, 3))\n",
+    "\n",
+    "axs[0].plot(range(1, NUM_EPOCHS + 1), train_epochs_losses, label='train')\n",
+    "axs[0].plot(range(1, NUM_EPOCHS + 1), val_epochs_losses, linestyle='dashed', label='validation')\n",
+    "\n",
+    "axs[1].plot(range(1, NUM_EPOCHS + 1), train_epochs_acc, label='train')\n",
+    "axs[1].plot(range(1, NUM_EPOCHS + 1), val_epochs_acc, linestyle='dashed', label='validation')\n",
+    "\n",
+    "axs[0].set_ylabel(loss_func_name)\n",
+    "axs[0].set_xlabel('Epoch')\n",
+    "axs[0].legend()\n",
+    "\n",
+    "axs[1].set_ylabel('Accuracy')\n",
+    "axs[1].set_xlabel('Epoch')\n",
+    "axs[1].legend()\n",
+    "\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "2253b04d-a26e-4b8c-aade-819c3771b869",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 111,
+   "id": "964329df-2cd0-4292-b5b3-e3fbd15decba",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# array with all losses\n",
+    "all_lasses_header = ','.join([\n",
+    "    f'{loss_func_name.split()[0]}_train', f'{loss_func_name.split()[0]}_val',\n",
+    "    'accuracy_train', 'accuracy_val'\n",
+    "])\n",
+    "all_losses_array = np.array(\n",
+    "    [train_epochs_losses, val_epochs_losses, train_epochs_acc, val_epochs_acc]\n",
+    ").T"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 112,
+   "id": "0894e6ea-cdcb-473f-9892-ee87770c6941",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# filepath to save losses\n",
+    "losses_filepath = f'{RESULTS_FOLDER}/training_curves.csv'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 113,
+   "id": "36b11433-0efc-4ae7-9053-dac28cee6967",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# saving losses\n",
+    "np.savetxt(\n",
+    "    losses_filepath, all_losses_array,\n",
+    "    delimiter=',', header=all_lasses_header, comments=\"\"\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "753a15ac-537f-453d-b404-31fbc5389ddb",
+   "metadata": {},
+   "source": [
+    "#### Save model weights"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 114,
+   "id": "3535ab45-1f1f-418f-994c-c2c3c8f1a209",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# filepath to save the model\n",
+    "model_filepath = f'{RESULTS_FOLDER}/optical_net.pth'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 115,
+   "id": "663cd0ce-07a1-4221-a09c-dadc7a34232c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# saving model\n",
+    "torch.save(optical_setup_to_train.net.state_dict(), model_filepath)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cc99c34a-f60a-46ee-8d24-b43f28b7c4c7",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "47c7d2c3-ac64-4b78-85b9-3fd4f692846c",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "103b80f0-9743-4fe9-a6e9-95a1e84204d3",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7a20be9d-c4da-476b-822f-fb431d1d4ff1",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e672b668-b6c1-49a5-bb38-610fad3dd7f2",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "eb1247c6-9e1c-464c-8f9b-6330c56bfb52",
+   "metadata": {},
+   "source": [
+    "# 5. Load model and estimate perfomance"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 116,
+   "id": "37ea42d7-0532-46a8-8f72-3cc2908c6a6d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "LOAD_FOLDER = RESULTS_FOLDER  # select experiment folder!"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "5ecb3122-ca66-4b28-be8c-7a3bf6d8fb71",
+   "metadata": {},
+   "source": [
+    "## 5.1. Loading of saved results"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "68d51a4f-7aeb-4da8-8394-d237c3978317",
+   "metadata": {},
+   "source": [
+    "### 5.1.1. Variables"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 117,
+   "id": "9c12eb94-dcaa-4034-b56a-9657a0cd7317",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "with open(f'{RESULTS_FOLDER}/conditions.json') as json_file:\n",
+    "    LOADED_VARIABLES = json.load(json_file)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "f30cbf38-77de-4df0-8094-25be5a19a47e",
+   "metadata": {},
+   "source": [
+    "### 5.1.2. Weights of a model"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 118,
+   "id": "de870579-4415-4018-a3f4-ed7fa1d04f29",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "c:\\Users\\nikku\\newfolder\\.venv\\Lib\\site-packages\\svetlanna\\elements\\free_space.py:150: UserWarning: Aliasing problems may occur in the AS method (x-axis). Consider reducing the distance.\n",
+      "  warn(\n",
+      "c:\\Users\\nikku\\newfolder\\.venv\\Lib\\site-packages\\svetlanna\\elements\\free_space.py:155: UserWarning: Aliasing problems may occur in the AS method (y-axis). Consider reducing the distance.\n",
+      "  warn(\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "<All keys matched successfully>"
+      ]
+     },
+     "execution_count": 118,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# init setup to load weights\n",
+    "optical_setup_loaded = get_setup(SIM_PARAMS, LOADED_VARIABLES['use_apertures'])\n",
+    "# LOAD WEIGHTS for the model\n",
+    "optical_setup_loaded.net.load_state_dict(torch.load(f'{LOAD_FOLDER}/optical_net.pth'))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "3372ffd6-f7a1-4d1d-b4e3-800a77b5bf98",
+   "metadata": {},
+   "source": [
+    "### 5.1.3. Detector processor"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 119,
+   "id": "593decb5-3bc8-481d-bacf-faf6606b9ab8",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "DETECTOR_MASK_LOADED = torch.load(f'{LOAD_FOLDER}/detector_mask.pt')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 120,
+   "id": "87bb9910-2f90-451d-ad08-f89c24194960",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "DETECTOR_PROCESSOR_LOADED = DetectorProcessorClf(\n",
+    "    simulation_parameters=SIM_PARAMS,\n",
+    "    num_classes=NUMBER_OF_CLASSES,\n",
+    "    segmented_detector=DETECTOR_MASK_LOADED,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a0d7330d-a12c-4078-acc7-352cfdfe1df8",
+   "metadata": {},
+   "source": [
+    "### 5.1.4. Trained phase masks visualization"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 127,
+   "id": "a2d585d1",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Sequential(\n",
+       "  (0): FreeSpace()\n",
+       "  (1): DiffractiveLayer(\n",
+       "    (mask_svtlnn_inner_parameter): InnerParameterStorageModule()\n",
+       "  )\n",
+       "  (2): FreeSpace()\n",
+       "  (3): Detector()\n",
+       ")"
+      ]
+     },
+     "execution_count": 127,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "optical_setup_loaded.net"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 129,
+   "id": "11683040-3e27-4377-959c-bea12a776875",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "n_cols = NUM_OF_DIFF_LAYERS\n",
+    "n_rows = 1\n",
+    "\n",
+    "fig, axs = plt.subplots(n_rows, n_cols, figsize=(n_cols * 3, n_rows * 3.2))\n",
+    "\n",
+    "if n_cols == 1:\n",
+    "    axs = [axs]\n",
+    "\n",
+    "ind_diff_layer = 0\n",
+    "cmap = 'gist_stern'\n",
+    "\n",
+    "for layer in optical_setup_loaded.net:\n",
+    "    if isinstance(layer, DiffractiveLayer):\n",
+    "\n",
+    "        ax_this = axs[ind_diff_layer]\n",
+    "        ax_this.set_title(f'{ind_diff_layer + 1}. DiffractiveLayer')\n",
+    "\n",
+    "        trained_mask = layer.mask.detach()\n",
+    "\n",
+    "        ax_this.imshow(\n",
+    "            trained_mask,\n",
+    "            cmap=cmap,\n",
+    "            vmin=0,\n",
+    "            vmax=MAX_PHASE\n",
+    "        )\n",
+    "\n",
+    "        # select only a part within apertures\n",
+    "        x_frame = (x_layer_nodes - DETECTOR_SIZE[1]) / 2\n",
+    "        y_frame = (y_layer_nodes - DETECTOR_SIZE[0]) / 2\n",
+    "\n",
+    "        ax_this.set_xlim([x_frame, x_layer_nodes - x_frame])\n",
+    "        ax_this.set_ylim([y_frame, y_layer_nodes - y_frame])\n",
+    "\n",
+    "        ind_diff_layer += 1\n",
+    "\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "fcf6a8c7-c74a-414a-923d-4f080708b8b5",
+   "metadata": {},
+   "source": [
+    "## 5.2. Calculate metrics on test set for the loaded model\n",
+    "\n",
+    "Checking if the loaded model works correctly!"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 132,
+   "id": "98333cf9-832f-46ac-8bfa-fef032846a15",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "validation:   0%|          | 0/1000 [00:00<?, ?it/s]"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "validation: 100%|██████████| 1000/1000 [00:24<00:00, 40.17it/s]"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Results after training on TEST set:\n",
+      "\tCE loss : 2.043890\n",
+      "\tAccuracy : 56.2 %\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "test_losses_1, _, test_accuracy_1 = onn_validate_clf(\n",
+    "    optical_setup_loaded.net,  # optical network with loaded weights\n",
+    "    test_wf_loader,  # dataloader of training set\n",
+    "    DETECTOR_PROCESSOR_LOADED,  # detector processor\n",
+    "    loss_func_clf,\n",
+    "    device=DEVICE,\n",
+    "    show_process=True,\n",
+    ")  # evaluate the model\n",
+    "\n",
+    "print(\n",
+    "    'Results after training on TEST set:\\n' + \n",
+    "    f'\\t{loss_func_name} : {np.mean(test_losses_1):.6f}\\n' +\n",
+    "    f'\\tAccuracy : {(test_accuracy_1 * 100):>0.1f} %'\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f00ced0a-7948-4685-bd4e-57ef9e58adfd",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "f47740db-90ff-4b2f-a362-7731a460e768",
+   "metadata": {},
+   "source": [
+    "## 5.3. Example of classification (propagation through the setup)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "eba54cc2-d8df-4df5-8aed-08c4f0bd89be",
+   "metadata": {},
+   "source": [
+    "### 5.3.1. Select a sample to propagate"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 133,
+   "id": "57cc4e7e-cfb7-4ed3-9caf-87bc39b7ef23",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# plot an image\n",
+    "# '1' - 3214, good\n",
+    "# '4' - 6152, good\n",
+    "# '6' - 123, good\n",
+    "# '8' - 128, good\n",
+    "# '0' - 3, good\n",
+    "ind_test = np.random.randint(len(mnist_wf_test_ds))\n",
+    "cmap = 'hot'\n",
+    "\n",
+    "fig, axs = plt.subplots(1, 2, figsize=(2 * 3, 3))\n",
+    "\n",
+    "test_wavefront, test_target = mnist_wf_test_ds[ind_test]\n",
+    "\n",
+    "axs[0].set_title(f'intensity (id={ind_test})')\n",
+    "axs[0].imshow(test_wavefront.intensity, cmap=cmap)\n",
+    "\n",
+    "axs[1].set_title(f'phase')\n",
+    "axs[1].imshow(\n",
+    "    test_wavefront.phase, cmap=cmap,\n",
+    "    vmin=0, vmax=2 * torch.pi\n",
+    ")\n",
+    "\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 134,
+   "id": "f725f858-61f1-4157-978e-a71403c67701",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# propagation of the example through the trained network\n",
+    "setup_scheme, test_wavefronts = optical_setup_loaded.stepwise_forward(test_wavefront)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "0d70f1ec-3389-4a0c-9645-9e345efec8f0",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "eedbd9ee-c50a-4b73-b38c-a3aa6b9a62d6",
+   "metadata": {},
+   "source": [
+    "### <span style=\"color:red\"> 5.3.2. Stepwise propagation (TODO)</span>"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "d69f0a7f-7c81-41ba-b046-8c2242785c68",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO: see what happens with a wavefront"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "9be9d3b1-8c2a-4bc7-83ef-de796b645e43",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO: aad your code to see^ how the wavefront propagates through a trained optical network!\n",
+    "\n",
+    "# your code... (Hint: we already did it earlier)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c0fe04f6-1b44-4959-b207-d03556706390",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b3dc20fc-647b-4434-9603-45ff80c09059",
+   "metadata": {},
+   "source": [
+    "### 5.3.3. Detector picture (enlarged)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 136,
+   "id": "c616ff93-51d4-412d-8475-4cb33954aa80",
+   "metadata": {},
+   "outputs": [
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "# create a figure with subplots\n",
+    "fig, ax_this = plt.subplots(1, 1, figsize=(3, 3.2))\n",
+    "\n",
+    "# Detector output (not a wavefront!)\n",
+    "ax_this.set_title('Detector Intensity')\n",
+    "ax_this.imshow(\n",
+    "    test_wavefronts[-1].detach().numpy(), cmap='hot',\n",
+    "    # vmin=0, vmax=1  # uncomment to make the same limits\n",
+    ")\n",
+    "\n",
+    "for zone in get_zones_patches(DETECTOR_MASK_LOADED):\n",
+    "    # add zone's patches to the axis\n",
+    "    ax_this.add_patch(zone)\n",
+    "\n",
+    "# select only a part within apertures! uncomment if needed\n",
+    "# x_frame = (x_layer_nodes - DETECTOR_SIZE[1]) / 2\n",
+    "# y_frame = (y_layer_nodes - DETECTOR_SIZE[0]) / 2\n",
+    "\n",
+    "# plt.axis([x_frame, x_layer_nodes - x_frame, y_layer_nodes - y_frame, y_frame])\n",
+    "\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 138,
+   "id": "392dd721-c8de-4e54-bf55-931c498c4f81",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "0 : 12.86%\n",
+      "1 : 14.85%\n",
+      "2 : 15.35%\n",
+      "3 : 5.27%\n",
+      "4 : 12.35%\n",
+      "5 : 3.13%\n",
+      "6 : 8.57%\n",
+      "7 : 12.40%\n",
+      "8 : 12.67%\n",
+      "9 : 2.55%\n"
+     ]
+    }
+   ],
+   "source": [
+    "# get probabilities of an example classification\n",
+    "test_probas = DETECTOR_PROCESSOR_LOADED.forward(test_wavefronts[-1])\n",
+    "# Comment: forward() method is from DetectorProcessorClf\n",
+    "#          p_i = I(detector_i) / sum_j(I(detector_j))\n",
+    "# Comment: It's another output than for batch_forward, that was used during training!\n",
+    "\n",
+    "assert np.isclose(test_probas.sum().item(), 1)\n",
+    "\n",
+    "for label, prob in enumerate(test_probas[0]):\n",
+    "    print(f'{label} : {prob * 100:.2f}%')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f1a24a10-101d-4862-b731-94a6470a0fa1",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "3a8efd33-3e87-4257-93d4-aec5237c315e",
+   "metadata": {},
+   "source": [
+    "## 5.3. Confusion matrix"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cf3334d3-dbd2-44ba-a63e-5f7986ffdb09",
+   "metadata": {},
+   "source": [
+    "### 5.3.1. Predict all Test dataset and save all results"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 139,
+   "id": "faa0ea29-4c28-443c-8b7f-50efac14ce63",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "100%|██████████| 10000/10000 [01:24<00:00, 118.65it/s]\n"
+     ]
+    }
+   ],
+   "source": [
+    "targets_test_lst = []\n",
+    "preds_test_lst = []  # lists of targets and model predictioons\n",
+    "\n",
+    "# loop over the test dataset\n",
+    "for ind, (wavefront_this, target_this) in enumerate(tqdm(mnist_wf_test_ds)):\n",
+    "    optical_setup_loaded.net.eval()\n",
+    "    \n",
+    "    batch_wavefronts = torch.unsqueeze(wavefront_this, 0)\n",
+    "    batch_labels = torch.unsqueeze(torch.tensor(target_this), 0)  # to use forwards for batches\n",
+    "    \n",
+    "    with torch.no_grad():\n",
+    "        detector_output = optical_setup_loaded.net(batch_wavefronts)\n",
+    "        # process a detector image\n",
+    "        batch_probas = DETECTOR_PROCESSOR_LOADED.batch_forward(detector_output)\n",
+    "\n",
+    "        for ind_in_batch in range(batch_labels.size()[0]):\n",
+    "            label_this = batch_labels[ind_in_batch].item()  # true label\n",
+    "            \n",
+    "            targets_test_lst.append(label_this)\n",
+    "            preds_test_lst.append(batch_probas[ind_in_batch].argmax().item())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "691c4792-5019-4ea1-ac02-28965f6048ce",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "id": "75901f71-c34a-4d4f-a5a6-0b475d058fb6",
+   "metadata": {},
+   "source": [
+    "### <span style=\"color:red\"> 5.3.2. Confusion matrix (TODO) </span>"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e0cca796-1fe3-4905-810b-d3f4cfc19231",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO: fill the confusion matrix!"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 144,
+   "id": "59a26dd6-81dc-4e7e-b53d-13f2dd553ca6",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# ordinary confusion matrix\n",
+    "\n",
+    "confusion_matrix = torch.zeros(\n",
+    "    size=(10, 10),\n",
+    "    dtype=torch.int32\n",
+    ")\n",
+    "\n",
+    "for true_label, pred_label in zip(targets_test_lst, preds_test_lst):\n",
+    "    confusion_matrix[true_label, pred_label] += 1"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9e407677-0e7e-43fe-a2a2-41188d0f66e0",
+   "metadata": {},
+   "source": [
+    "#### Plot confusion matrix"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 148,
+   "id": "05a93b72-1815-478f-9914-7f78f400a160",
+   "metadata": {},
+   "outputs": [
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "fig, ax0 = plt.subplots(1, 1, figsize=(6, 5))\n",
+    "\n",
+    "ax0.set_title('Confusion matrix')\n",
+    "ax0.matshow(confusion_matrix, cmap='Blues')\n",
+    "\n",
+    "for i in range(NUMBER_OF_CLASSES):\n",
+    "    for j in range(NUMBER_OF_CLASSES):\n",
+    "        val = confusion_matrix[j, i].item()\n",
+    "        ax0.text(\n",
+    "            i, j, str(val),\n",
+    "            va='center', ha='center',\n",
+    "            color='k', fontsize=9\n",
+    "        )\n",
+    "\n",
+    "ax0.set_ylabel('Target')\n",
+    "ax0.set_xlabel('Predicted')\n",
+    "\n",
+    "ax0.set_xticks(range(NUMBER_OF_CLASSES))\n",
+    "ax0.set_yticks(range(NUMBER_OF_CLASSES))\n",
+    "\n",
+    "plt.show()\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "880d5408-e930-4479-a5a1-d7c576bbf554",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# TODO: make some conclusions..."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "5592d4b4-0ea4-456b-9d65-5f56e915ee6f",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": ".venv (3.11.9)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.11.9"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
